@@ -1,9 +1,11 @@
 import * as React from 'react';
-import Head from 'next/head';
 import styles from '../styles/Home.module.css';
+import Layout from '../components/layouts/layout';
+import DetailModal from '../components/countriesList/detail';
 import { getCountriesList } from '../libs/posts.js';
 import {
   Paper,
+  Button,
   Box,
   Grid,
   TableContainer,
@@ -30,12 +32,12 @@ const columns = [
   {
     id: 'code',
     label: 'Country Code',
-    minWidth: 170,
+    minWidth: 180,
   },
   {
     id: 'native_country_name',
     label: 'Native Country Name',
-    minWidth: 170,
+    minWidth: 150,
   },
   {
     id: 'alt_country_name',
@@ -59,6 +61,8 @@ export async function getStaticProps() {
 
 export default function Home({ countries }) {
   const [page, setPage] = React.useState(0);
+  const [open, setOpen] = React.useState(false);
+  const [openIndex, setOpenIndex] = React.useState(null);
   const [countryOrder, setCountryOrder] = React.useState('asc');
   const [rowsPerPage, setRowsPerPage] = React.useState(25);
 
@@ -84,33 +88,20 @@ export default function Home({ countries }) {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-  console.log(countries[0]);
+  const handleClose = () => {
+    setOpen(false);
+    setOpenIndex(null);
+  };
 
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Countries List</title>
-      </Head>
-
-      <main>
-        <h1 className={styles.title}>
-          Initial Catalog Implementation
-        </h1>
-        <TableContainer sx={{ maxHeight: 440 }}>
-          <Table stickyHeader aria-label="sticky table">
-            <TableHead>
-              {
-                /*
-            <TableRow>
-              <TableCell align="center" colSpan={2}>
-                Country
-              </TableCell>
-              <TableCell align="center" colSpan={3}>
-                Details
-              </TableCell>
-            </TableRow>
-            */
-                <TableRow stlye={{backgroundColor: 'yellow'}}>
+    <Layout>
+      <h1 className={styles.title}>
+        Finalizing Catalog Implementation
+      </h1>
+      <TableContainer sx={{ maxHeight: 440 }}>
+        <Table stickyHeader aria-label="sticky table">
+          <TableHead>
+            <TableRow stlye={{backgroundColor: 'yellow'}}>
               {
                 columns.map((column) => 
                   column.id !== 'code' 
@@ -120,12 +111,15 @@ export default function Home({ countries }) {
                           key={column.id}
                           style={{ minWidth: column.minWidth }}
                           sortDirection={countryOrder}
+                          align='left'
                         >
                           <TableSortLabel
                             active={true}
                             key={column.id}
                             direction={countryOrder}
-                            onClick={() => setCountryOrder(countryOrder === 'asc' ? 'desc' : 'asc')}
+                            onClick={
+                              () => setCountryOrder(countryOrder === 'asc' ? 'desc' : 'asc')
+                            }
                           >
                             {column.label}
                           </TableSortLabel>
@@ -161,122 +155,81 @@ export default function Home({ countries }) {
                             </Grid>
                           </Grid>
                         </TableCell>
-
                       )
                 )
               }
             </TableRow>
-              }
           </TableHead>
-            <TableBody>
-              {
-                countries
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .sort(getComparator(countryOrder))
-                  .map((row) => {
-                    return (
-                      <TableRow hover  key={Math.random()} role="checkbox" tabIndex={-1} key={row.code}>
-                        <TableCell>
-                          <img
-                            src={row.flags.png}
-                            width={24}
-                            height={24}
-                          />
-                        </TableCell>
-                        <TableCell>
+          <TableBody>
+            {
+              countries
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .sort(getComparator(countryOrder))
+                .map((row, index) => {
+                  return (
+                    <TableRow
+                      hover
+                      key={Math.random()}
+                      tabIndex={-1}
+                    >
+                      <TableCell>
+                        <img
+                          src={row.flags.png}
+                          width={24}
+                          height={24}
+                        />
+                      </TableCell>
+                      <TableCell align='left'>
+                        <Button
+                          onClick={(evt) => { setOpenIndex(index); setOpen(true);}}
+                          id={`modal-${index}`}
+                        >
                           {row.name.official}
-                        </TableCell>
-                        <TableCell key={'code'}>
-                          <Grid container>
-                            <Grid item md={6} style={{ textAlign: 'left' }}>
-                              <div>{row.cca2}</div>
-                            </Grid>
-                            <Grid item md={6} style={{ textAlign: 'right' }}>
-                              <div>{row.cca3}</div>
-                            </Grid>
+                        </Button>
+                        <DetailModal
+                          open={open}
+                          index={index}
+                          openIndex={openIndex}
+                          handleClose={handleClose}
+                          detail={row}
+                        />
+                      </TableCell>
+                      <TableCell key={'code'}>
+                        <Grid container>
+                          <Grid item md={6} style={{ textAlign: 'left' }}>
+                            <div>{row.cca2}</div>
                           </Grid>
-                        </TableCell>
-                        <TableCell>
-                          {row.name.common}
-                        </TableCell>
-                        <TableCell>
-                          {row.altSpellings[1] || 'N/A'}
-                        </TableCell>
-                        <TableCell align={'right'}>
-                          {row.idd.root}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })
-              }
-            </TableBody>
+                          <Grid item md={6} style={{ textAlign: 'right' }}>
+                            <div>{row.cca3}</div>
+                          </Grid>
+                        </Grid>
+                      </TableCell>
+                      <TableCell>
+                        {row.name.common}
+                      </TableCell>
+                      <TableCell>
+                        {row.altSpellings[1] || 'N/A'}
+                      </TableCell>
+                      <TableCell align={'right'}>
+                        {row.idd.root}
+                      </TableCell>
+                    </TableRow>
+                  );
+                }
+                )
+            }
+          </TableBody>
         </Table>
       </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[10, 25, 100]}
-          component="div"
-          count={countries.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-    </main>
-
-      <footer>
-        <p>
-          Powered by Chanmony KEAT
-        </p>
-      </footer>
-
-      <style jsx>{`
-  main {
-  padding: 5rem 0;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-  footer {
-  width: 100%;
-  height: 100px;
-  border-top: 1px solid #eaeaea;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-  footer p {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-decoration: none;
-  color: inherit;
-}
-  `}</style>
-
-      <style jsx global>{`
-      html,
-      body {
-        padding: 0;
-        margin: 0;
-        font-family:
-          -apple-system,
-          BlinkMacSystemFont,
-          Segoe UI,
-          Roboto,
-          Oxygen,
-          Ubuntu,
-          Cantarell,
-          Fira Sans,
-          Droid Sans,
-          Helvetica Neue,
-          sans-serif;
-      }
-      * {
-        box-sizing: border-box;
-      }
-      `}</style>
-    </div>
+      <TablePagination
+        rowsPerPageOptions={[10, 25, 100]}
+        component="div"
+        count={countries.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+    </Layout>
   );
 }

@@ -20,6 +20,20 @@
   justify-content: center;
   flex-wrap: wrap;
 
-  max-width: 800px;
+  max-width: 300px;
   margin-top: 3rem;
+}
+
+.modalTitle {
+  text-align: center;
+  border-bottom: 1px solid black;
+}
+
+.test {
+  max-width: 100%;
+}
+.modalImage {
+  height: 180px;
+  width: 260px;
+  margin: 10px;
 }
