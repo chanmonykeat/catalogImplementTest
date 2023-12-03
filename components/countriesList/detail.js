@@ -23,7 +23,6 @@ export default function DetailModal(props) {
     handleClose,
     detail
   } = props;
-  open && index === openIndex && console.log(detail);
   return (
     <React.Fragment>
       <Dialog
@@ -35,14 +34,14 @@ export default function DetailModal(props) {
       >
         <DialogTitle className={styles.modalTitle}>{'Detail'}</DialogTitle>
         <DialogContent>
-          <Grid container>
+          <Grid container style={{ borderBottom: '2px solid gray' }}>
             <Grid item>
               <img
                 src={detail.flags.png}
                 className={styles.modalImage}
               />
             </Grid>
-            <Grid item style={{borderLeft: '1px solid black'}} xs={5}>
+            <Grid item style={{borderLeft: '2px solid gray'}} xs={5}>
               <Grid container style={{paddingLeft: '10px'}}>
                 <Grid item xs={12}>
                   {`Trivia: `}
@@ -73,7 +72,7 @@ export default function DetailModal(props) {
                 </Grid>
               </Grid>
             </Grid>
-            <DialogContentText>
+            <DialogContentText style={{ borderTop: '2px solid gray', width: '600px' }}>
               <Grid item xs={12}>
                 {`Country: ${detail.name.common}`}
               </Grid>
@@ -95,7 +94,7 @@ export default function DetailModal(props) {
               <Grid item xs={12}>
                 <span>
                   Map :
-                  <a href={detail.maps.googleMaps}>
+                  <a href={detail.maps.googleMaps} target="_blank">
                     {` ${detail.maps.googleMaps}`}
                   </a>
                 </span>

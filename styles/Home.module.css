@@ -1,5 +1,6 @@
 .container {
-  min-height: 100vh;
+  height: auto;
+  bottom: 0;
   padding: 0 0.5rem;
   display: flex;
   flex-direction: column;
@@ -25,10 +26,37 @@
 }
 
 .modalTitle {
-  text-align: center;
-  border-bottom: 1px solid black;
+  text-align: left;
+  border-bottom: 1px solid white;
+  background-color: #ff1584;
+  color: white;
 }
 
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 220px;
+  white-space: nowrap;
+  text-align:left;
+}
+
+.tableHead {
+  background-color: #ff1584;
+  border: 1px solid white;
+  color: white;
+}
+.subHeadLeft {
+  text-align:left;
+  border-right: 1px solid white;
+  border-top: 1px solid white;
+  color: white;
+}
+.subHeadRight {
+  text-align:right;
+  border-left: 1px solid white;
+  border-top: 1px solid white;
+  color: white;
+}
 .test {
   max-width: 100%;
 }

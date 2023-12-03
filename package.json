@@ -8,10 +8,12 @@
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.14.19",
     "@mui/material": "^5.14.19",
     "next": "latest",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "react-window": "^1.8.10"
   },
   "engines": {
     "node": ">=18"
